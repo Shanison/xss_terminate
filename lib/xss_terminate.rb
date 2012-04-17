@@ -1,8 +1,18 @@
 module XssTerminate
   def self.included(base)
     base.extend(ClassMethods)
-    # sets up default of stripping tags for all fields
-    base.send(:xss_terminate)
+    # sets up default of stripping tags for all fields unless the enable_xss_terminate_by_default is false
+    # to disable xss_terminate by default for all modules, include the following lines in environment.rb
+    # module XssTerminate
+    #  @enable_xss_terminate_by_default = false
+    #  def self.enable_xss_terminate_by_default
+    #    @enable_xss_terminate_by_default
+    #  end
+    # end
+    
+    if !(self.respond_to? :enable_xss_terminate_by_default) || self.enable_xss_terminate_by_default
+      base.send(:xss_terminate)
+    end
   end
 
   module ClassMethods
